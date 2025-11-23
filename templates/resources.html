@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learning Resources - CodePath AI</title>
+  <style>
+    :root{
+      --pink:#ff73d9; 
+      --purple:#9a57ff; 
+      --ink:#4a1560; 
+      --bg1:#f4e1ff; 
+      --bg2:#ffe6f9;
+    }
+    body{
+      margin:0; 
+      font-family:"Poppins",sans-serif;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2),#fff);
+    }
+    header{
+      background:linear-gradient(90deg,var(--purple),var(--pink));
+      color:#fff; padding:14px 22px; 
+      display:flex; align-items:center; justify-content:space-between;
+      box-shadow:0 8px 20px rgba(160,60,255,.25);
+      font-weight:600;
+    }
+    header a{ 
+      color:#fff; text-decoration:none; 
+      padding:8px 14px; border-radius:10px; 
+      background:rgba(255,255,255,.18)
+    }
+    .container{
+      max-width:1000px; 
+      margin:38px auto; 
+      background:#fff; border-radius:20px; 
+      padding:28px;
+      box-shadow:0 10px 28px rgba(160,60,255,.18);
+    }
+    h1{ 
+      color:var(--purple); text-align:center; 
+      margin:6px 0 18px; font-weight:700; 
+    }
+    .search-wrap{
+      display:flex; gap:10px; 
+      margin:10px auto 18px; max-width:720px;
+    }
+    .search-wrap input[type="text"]{
+      flex:1; padding:12px 14px; 
+      border:1px solid #ddd; 
+      border-radius:12px; 
+      outline:none; font-size:15px;
+    }
+    .btn{
+      background:linear-gradient(90deg,var(--purple),var(--pink)); 
+      color:#fff; border:none; 
+      border-radius:12px;
+      padding:10px 16px; cursor:pointer; 
+      font-weight:600; transition:.25s;
+    }
+    .btn:hover{ 
+      transform:scale(1.05); 
+      box-shadow:0 0 12px rgba(160,60,255,.4); 
+    }
+
+    /* AI results block */
+    .ai-block{
+      background:#faf5ff; border-left:6px solid var(--purple); 
+      border-radius:14px; padding:16px;
+      margin:18px 0 26px;
+    }
+    .ai-block h2{ 
+      margin:0 0 10px; color:var(--purple); 
+    }
+
+    /* Grid */
+    .grid{
+      display:grid; gap:18px; 
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    }
+    .card{
+      background:#fff3ff; 
+      border-left:5px solid var(--purple); 
+      border-radius:14px; padding:16px;
+      box-shadow:0 6px 14px rgba(160,60,255,.12); 
+      transition:.25s;
+    }
+    .card:hover{ 
+      transform:translateY(-3px); 
+      box-shadow:0 10px 18px rgba(160,60,255,.25); 
+    }
+    .title{ 
+      color:var(--purple); margin:0 0 6px; 
+      font-size:18px; font-weight:700; 
+    }
+    .desc{ 
+      color:#444; font-size:13.5px; 
+      margin:0 0 10px; min-height:36px; 
+    }
+    .row{ 
+      display:flex; flex-wrap:wrap; 
+      gap:8px; margin:10px 0 8px; 
+    }
+    .link{
+      background:#fff; border:1px solid #eee; 
+      color:#444; border-radius:10px; 
+      padding:8px 10px; text-decoration:none;
+      font-weight:500; transition:.2s;
+    }
+    .link:hover{ 
+      background:#faf0ff; 
+      box-shadow:0 0 8px rgba(166,66,255,.3); 
+    }
+
+    /* Progress bar */
+    .pwrap{ 
+      background:#f1e3ff; height:12px; 
+      border-radius:10px; overflow:hidden; 
+      margin-top:8px; 
+    }
+    .pfill{ 
+      height:100%; width:0%; 
+      background:linear-gradient(90deg,var(--purple),var(--pink)); 
+      transition:width .6s ease; 
+    }
+    .plabel{ 
+      text-align:right; color:#666; 
+      font-size:12px; margin-top:6px; 
+    }
+
+    .nav{
+      text-align:center; 
+      margin-top:26px; 
+      display:flex; gap:10px; 
+      justify-content:center; 
+      flex-wrap:wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div>📚 Learning Resources</div>
+    <a href="/dashboard">Back to Dashboard</a>
+  </header>
+
+  <div class="container">
+
+    <h1>Find the Best Resources</h1>
+
+    <!-- AI Search -->
+    <form class="search-wrap" method="POST" action="/resources">
+      <input type="text" name="topic" placeholder="Search any topic (e.g., DevOps, React, Python, DSA)"/>
+      <button class="btn" type="submit">Search</button>
+    </form>
+
+    {% if ai_resources %}
+    <div class="ai-block">
+      <h2>🔎 AI Suggestions for “{{ topic }}”</h2>
+      <div>{{ ai_resources | safe }}</div>
+    </div>
+    {% endif %}
+
+    <h2 style="color:#9a57ff;margin:8px 0 12px;">✨ Best Recommended Courses (YouTube + Coursera)</h2>
+
+    <div id="grid" class="grid"></div>
+
+    <div class="nav">
+      <a class="btn" href="/generate-roadmap">🗺 Roadmap</a>
+      <a class="btn" href="/interview">🎤 Mock Interview</a>
+      <a class="btn" href="/quiz?topic=General">🧠 Take Quiz</a>
+    </div>
+
+  </div>
+
+  <script>
+    const resources = [
+      { skill:"AI Engineer", yt:"https://www.youtube.com/watch?v=JMUxmLyrhSk", course:"https://www.coursera.org/learn/ai-for-everyone", desc:"Learn core AI, basics to deployment." },
+      { skill:"ML Engineer", yt:"https://www.youtube.com/watch?v=IoZGSQ07e8g", course:"https://www.coursera.org/specializations/machine-learning-introduction", desc:"ML algorithms, pipelines & metrics." },
+      { skill:"Frontend Developer", yt:"https://www.youtube.com/watch?v=ZxKM3DCV2kE", course:"https://www.coursera.org/professional-certificates/meta-front-end-developer", desc:"HTML, CSS, JS + React." },
+      { skill:"Backend Developer", yt:"https://www.youtube.com/watch?v=Oe421EPjeBE", course:"https://www.coursera.org/learn/django-build-web-apps", desc:"Node/Express + APIs & DB." },
+      { skill:"Full Stack Developer", yt:"https://www.youtube.com/watch?v=7CqJlxBYj-M", course:"https://www.coursera.org/professional-certificates/ibm-full-stack-cloud-developer", desc:"Frontend + Backend + Deployment." },
+      { skill:"Data Analyst", yt:"https://www.youtube.com/watch?v=Vfo5le26IhY", course:"https://www.coursera.org/professional-certificates/google-data-analytics", desc:"SQL, Excel, dashboards." },
+      { skill:"Cloud Architect", yt:"https://www.youtube.com/watch?v=ulprqHHWlng", course:"https://www.coursera.org/specializations/google-cloud-architecture", desc:"AWS/GCP infrastructure." },
+      { skill:"Game Developer", yt:"https://www.youtube.com/watch?v=gB1F9G0JXOo", course:"https://www.coursera.org/specializations/game-design", desc:"Unity, physics, gameplay systems." },
+      { skill:"DevOps Engineer", yt:"https://www.youtube.com/watch?v=dV2Wm2_QsO4", course:"https://www.coursera.org/specializations/devops", desc:"CI/CD, Docker, Kubernetes." },
+      { skill:"Python Developer", yt:"https://www.youtube.com/watch?v=gfDE2a7MKjA", course:"https://www.coursera.org/specializations/python", desc:"Complete Python mastery." },
+      { skill:"Java Developer", yt:"https://www.youtube.com/watch?v=UmnCZ7-9yDY", course:"https://www.coursera.org/specializations/java-programming", desc:"Java OOP + Spring basics." },
+      { skill:"Cybersecurity Analyst", yt:"https://www.youtube.com/watch?v=1lwddP0KUEg", course:"https://www.coursera.org/professional-certificates/google-cybersecurity", desc:"Threats, SOC, security tools." },
+      { skill:"Data Scientist", yt:"https://www.youtube.com/watch?v=ua-CiDNNj30", course:"https://www.coursera.org/professional-certificates/ibm-data-science", desc:"ML, DL, statistics." },
+      { skill:"AI Researcher", yt:"https://www.youtube.com/watch?v=VyWAvY2CF9c", course:"https://www.coursera.org/specializations/deep-learning", desc:"Neural networks & DL." },
+      { skill:"Software Engineer", yt:"https://www.youtube.com/watch?v=AZTcesR8I2Y", course:"https://www.coursera.org/specializations/software-engineering", desc:"Design, testing, SDLC." },
+    ];
+
+    const grid = document.getElementById("grid");
+
+    function makeCard(item){
+      const id = item.skill.replace(/\s+/g,'_').toLowerCase();
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="title">${item.skill}</div>
+        <div class="desc">${item.desc}</div>
+
+        <div class="row">
+          <a class="link" target="_blank" href="${item.yt}">🎥 YouTube Course</a>
+          <a class="link" target="_blank" href="${item.course}">📘 Coursera</a>
+        </div>
+
+        <div class="row">
+          <a class="link" href="/quiz?topic=${encodeURIComponent(item.skill)}">🧠 Take Quiz</a>
+        </div>
+
+        <div class="row">
+          <button class="btn" data-skill="${item.skill}" data-id="${id}" data-type="start">▶ Start</button>
+          <button class="btn" data-skill="${item.skill}" data-id="${id}" data-type="complete">✅ Complete</button>
+        </div>
+
+        <div class="pwrap"><div id="bar-${id}" class="pfill"></div></div>
+        <div id="label-${id}" class="plabel">Progress: 0%</div>
+      `;
+      return card;
+    }
+
+    resources.forEach(r => grid.appendChild(makeCard(r)));
+
+    // Load saved progress
+    async function loadProgress(){
+      try{
+        const res = await fetch('/api/get-user-resources');
+        if(!res.ok) return;
+        const data = await res.json();
+        const saved = data.resources || data;
+
+        Object.entries(saved).forEach(([skill, obj])=>{
+          const id = skill.replace(/\s+/g,'_').toLowerCase();
+          const p = obj.progress || 0;
+
+          const bar = document.getElementById('bar-'+id);
+          const lab = document.getElementById('label-'+id);
+          if(bar) bar.style.width = p + '%';
+          if(lab) lab.textContent = 'Progress: ' + p + '%';
+        });
+
+      }catch(e){}
+    }
+
+    // Buttons
+    document.addEventListener('click', async (e)=>{
+      const btn = e.target.closest('button.btn');
+      if(!btn) return;
+
+      const type = btn.dataset.type;
+      const skill = btn.dataset.skill;
+      const id = btn.dataset.id;
+
+      const bar = document.getElementById('bar-'+id);
+      const lab = document.getElementById('label-'+id);
+
+      try{
+        if(type === 'start'){
+          bar.style.width = '40%';
+          lab.textContent = 'Progress: 40%';
+
+          await fetch('/api/start-resource', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({ title: skill, progress: 40 })
+          });
+
+          alert(`🚀 Started ${skill}`);
+
+        } else {
+          bar.style.width = '100%';
+          lab.textContent = 'Progress: 100%';
+
+          await fetch('/api/mark-resource-progress', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({ title: skill, progress: 100 })
+          });
+
+          alert(`🎉 Completed ${skill}!`);
+        }
+
+      }catch(err){
+        alert('⚠️ Error! Try again.');
+      }
+    });
+
+    loadProgress();
+  </script>
+
+</body>
+</html>

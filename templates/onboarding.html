@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodePath AI - Onboarding</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f4e1ff, #ffe6f9, #fff);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(166, 66, 255, 0.3);
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 8px 25px rgba(160, 60, 255, 0.15);
+    }
+
+    h1 {
+      text-align: center;
+      color: #9a57ff;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    label {
+      font-weight: 500;
+      color: #333;
+      margin-top: 15px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-top: 6px;
+      margin-bottom: 15px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+    }
+
+    select optgroup {
+      color: #9a57ff;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .start-button {
+      width: 100%;
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 600;
+    }
+
+    .start-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(160, 60, 255, 0.4);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-title">CodePath AI</div>
+    <a href="/" style="color:white;text-decoration:none;">Home</a>
+  </header>
+
+  <div class="container">
+    <form id="onboardForm">
+      <h1>👋 Welcome! Let’s personalize your journey</h1>
+
+      <label>Your Name:</label>
+      <input type="text" id="name" placeholder="Enter your full name" required>
+
+      <label>Choose Your Career Path:</label>
+      <select id="career" required>
+        <option value="">Select...</option>
+
+        <optgroup label="💻 Development">
+          <option value="Frontend Developer">Frontend Developer</option>
+          <option value="Backend Developer">Backend Developer</option>
+          <option value="Full Stack Developer">Full Stack Developer</option>
+          <option value="Python Developer">Python Developer</option>
+          <option value="Java Developer">Java Developer</option>
+        </optgroup>
+
+        <optgroup label="🤖 AI & Data">
+          <option value="AI Engineer">AI Engineer</option>
+          <option value="ML Engineer">ML Engineer</option>
+          <option value="Data Analyst">Data Analyst</option>
+          <option value="Data Scientist">Data Scientist</option>
+        </optgroup>
+
+        <optgroup label="☁️ Cloud & DevOps">
+          <option value="Cloud Architect">Cloud Architect</option>
+          <option value="DevOps Engineer">DevOps Engineer</option>
+        </optgroup>
+
+        <optgroup label="🎮 Design & Creative Tech">
+          <option value="Game Developer">Game Developer</option>
+          <option value="UI/UX Designer">UI/UX Designer</option>
+        </optgroup>
+
+        <optgroup label="🔐 Security & Networking">
+          <option value="Cybersecurity Engineer">Cybersecurity Engineer</option>
+          <option value="Network Administrator">Network Administrator</option>
+        </optgroup>
+      </select>
+
+      <label>Your Current Skill Level:</label>
+      <select id="skill" required>
+        <option value="">Select...</option>
+        <option value="Beginner">Beginner</option>
+        <option value="Intermediate">Intermediate</option>
+        <option value="Advanced">Advanced</option>
+      </select>
+
+      <button type="submit" class="start-button">🚀 Continue to Roadmap</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("onboardForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const career = document.getElementById("career").value;
+      const skill = document.getElementById("skill").value;
+
+      if (!name || !career || !skill) {
+        alert("⚠️ Please fill all fields!");
+        return;
+      }
+
+      try {
+        const response = await fetch("/save_user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, career, skill }),
+        });
+        const result = await response.json();
+        if (result.status === "success") {
+          window.location.href = `/generate-roadmap?careerPath=${career}&skillLevel=${skill}`;
+        } else {
+          alert("⚠️ " + result.message);
+        }
+      } catch (error) {
+        alert("❌ Error saving data. Please try again.");
+      }
+    });
+  </script>
+</body>
+</html>

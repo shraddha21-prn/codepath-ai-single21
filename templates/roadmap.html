@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Roadmap - CodePath AI</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f4e1ff, #ffe6f9, #fff);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(166, 66, 255, 0.3);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 8px 25px rgba(160, 60, 255, 0.15);
+      animation: fadeIn 1s ease;
+    }
+
+    h1 {
+      color: #9a57ff;
+      text-align: center;
+      margin-bottom: 25px;
+      text-shadow: 0 2px 10px rgba(160, 60, 255, 0.2);
+    }
+
+    .card {
+      background: linear-gradient(120deg, #f9e8ff, #fff5fa);
+      color: #4a1560;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 4px 12px rgba(160, 60, 255, 0.1);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ✨ Hover Effect */
+    .card:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 12px 25px rgba(160, 60, 255, 0.25);
+      background: linear-gradient(120deg, #ffe6fb, #f8dfff, #fff);
+    }
+
+    .card h3 {
+      color: #8e2de2;
+      margin-bottom: 10px;
+      transition: color 0.3s ease;
+    }
+
+    .card:hover h3 {
+      color: #d14bff;
+    }
+
+    .next-btn {
+      display: inline-block;
+      text-align: center;
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    .next-btn:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 15px rgba(160, 60, 255, 0.5);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-title">CodePath AI</div>
+    <a href="/" class="header-signout" style="color:white;text-decoration:none;">Sign Out</a>
+  </header>
+
+  <div class="container">
+    <h1>{{ career_path }} Roadmap ({{ skill_level }})</h1>
+
+    {% if roadmap.roadmap %}
+      {% for step in roadmap.roadmap %}
+        <div class="card">
+          <div class="card">
+  <h3>{{ step.week }}</h3>
+  <p>{{ step.topics }}</p>
+  <a href="/week/{{ loop.index }}" class="next-btn">Start {{ step.week }}</a>
+</div>
+
+        </div>
+      {% endfor %}
+    {% elif roadmap.error %}
+      <p style="color:red;">{{ roadmap.error }}</p>
+    {% else %}
+      <p>No roadmap data available.</p>
+    {% endif %}
+
+    <a href="/resources" class="next-btn" style="display:block;text-align:center;margin-top:30px;">Next → Resources</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Profile - CodePath AI</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f4e1ff, #ffe6f9, #fff);
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-card {
+      width: 420px;
+      max-width: 95%;
+      background: rgba(255, 255, 255, 0.25);
+      padding: 35px;
+      border-radius: 22px;
+      box-shadow: 0 5px 25px rgba(160,60,255,0.25);
+      backdrop-filter: blur(12px);
+      animation: fadeUp 1s ease;
+    }
+
+    h2 {
+      color: #9a57ff;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    label {
+      font-size: 14px;
+      color: #4a1560;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 18px 0;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(90deg,#9a57ff,#ff73d9);
+      color: #fff;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(160,60,255,0.4);
+    }
+
+    .success, .error {
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .success { background: rgba(0,255,0,0.25); color: green; }
+    .error { background: rgba(255,0,0,0.25); color: red; }
+
+    .top-links {
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .top-links a {
+      color: #9a57ff;
+      font-size: 14px;
+      margin-right: 10px;
+      text-decoration: none;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="profile-card">
+    <h2>👤 Your Profile</h2>
+
+    {% if success %}
+      <div class="success">{{ success }}</div>
+    {% endif %}
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+      <label>Name</label>
+      <input type="text" name="name" value="{{ user.name }}" required>
+
+      <label>Career Path</label>
+      <select name="career" required>
+        <option value="AI Engineer" {% if user.career == "AI Engineer" %}selected{% endif %}>AI Engineer</option>
+        <option value="ML Engineer" {% if user.career == "ML Engineer" %}selected{% endif %}>ML Engineer</option>
+        <option value="Frontend Developer" {% if user.career == "Frontend Developer" %}selected{% endif %}>Frontend Developer</option>
+        <option value="Backend Developer" {% if user.career == "Backend Developer" %}selected{% endif %}>Backend Developer</option>
+        <option value="Full Stack Developer" {% if user.career == "Full Stack Developer" %}selected{% endif %}>Full Stack Developer</option>
+        <option value="Data Analyst" {% if user.career == "Data Analyst" %}selected{% endif %}>Data Analyst</option>
+        <option value="Cloud Architect" {% if user.career == "Cloud Architect" %}selected{% endif %}>Cloud Architect</option>
+        <option value="Game Developer" {% if user.career == "Game Developer" %}selected{% endif %}>Game Developer</option>
+        <option value="DevOps Engineer" {% if user.career == "DevOps Engineer" %}selected{% endif %}>DevOps Engineer</option>
+        <option value="Python Developer" {% if user.career == "Python Developer" %}selected{% endif %}>Python Developer</option>
+        <option value="Java Developer" {% if user.career == "Java Developer" %}selected{% endif %}>Java Developer</option>
+        <option value="Cybersecurity Analyst" {% if user.career == "Cybersecurity Analyst" %}selected{% endif %}>Cybersecurity Analyst</option>
+        <option value="Data Scientist" {% if user.career == "Data Scientist" %}selected{% endif %}>Data Scientist</option>
+        <option value="AI Researcher" {% if user.career == "AI Researcher" %}selected{% endif %}>AI Researcher</option>
+        <option value="Software Engineer" {% if user.career == "Software Engineer" %}selected{% endif %}>Software Engineer</option>
+      </select>
+
+      <label>Skill Level</label>
+      <select name="skill" required>
+        <option value="Beginner" {% if user.skill_level == "Beginner" %}selected{% endif %}>Beginner</option>
+        <option value="Intermediate" {% if user.skill_level == "Intermediate" %}selected{% endif %}>Intermediate</option>
+        <option value="Advanced" {% if user.skill_level == "Advanced" %}selected{% endif %}>Advanced</option>
+      </select>
+
+      <button class="btn" type="submit">Update Profile</button>
+    </form>
+
+    <div class="top-links">
+      <a href="/dashboard">⬅ Back to Dashboard</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+
+</body>
+</html>

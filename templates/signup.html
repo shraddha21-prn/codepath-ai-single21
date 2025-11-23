@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - CodePath AI</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #f4e1ff, #ffe6f9, #fff);
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .signup-card {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 40px 35px;
+      width: 350px;
+      text-align: center;
+      color: #4a1560;
+      box-shadow: 0 4px 25px rgba(160, 60, 255, 0.2);
+      animation: fadeUp 1s ease;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #9a57ff;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(160, 60, 255, 0.4);
+    }
+
+    a {
+      color: #9a57ff;
+      text-decoration: none;
+      display: block;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <form class="signup-card" method="POST" action="/signup">
+    <h2>✨ Create Your Account</h2>
+
+    {% if error %}
+      <p style="color:white; background:rgba(255,0,0,0.4); padding:10px; border-radius:8px;">
+        {{ error }}
+      </p>
+    {% endif %}
+
+    <input type="text" name="name" placeholder="Full Name" required />
+    <input type="email" name="email" placeholder="Email Address" required />
+    <input type="password" name="password" placeholder="Password" required />
+
+    <button type="submit">Sign Up</button>
+
+    <a href="/login">Already have an account? Log In</a>
+  </form>
+</body>
+</html>

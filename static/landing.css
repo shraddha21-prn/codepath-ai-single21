@@ -1,0 +1,70 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+.welcome-container .start-button {
+    margin-top: 2rem; /* Add some space above the button */
+}
+
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+p {
+    font-size: 1.25rem;
+    color: #b3b3b3;
+    margin-bottom: 2rem;
+}
+
+.start-button {
+    display: inline-block;
+    background-color: #1DB954;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.start-button:hover {
+    transform: scale(1.05);
+    background-color: #1ED760;
+}
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply Animation */
+.animate-in {
+    animation: fadeInUp 1s ease-out forwards;
+    opacity: 0;
+}
+
+h1.animate-in { animation-delay: 0.2s; }
+p.animate-in { animation-delay: 0.4s; }
+a.animate-in { animation-delay: 0.6s; }
+.welcome-container .start-button {
+    margin: 10px; /* Add some space around the buttons */
+}

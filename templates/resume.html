@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resume Analyzer - CodePath AI</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #f4e1ff, #ffe6f9, #fff);
+    margin: 0; padding: 0;
+  }
+  header {
+    background: linear-gradient(90deg, #9a57ff, #ff73d9);
+    color: white;
+    padding: 15px 25px;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .container {
+    max-width: 900px;
+    background: #fff;
+    margin: 40px auto;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(160,60,255,0.15);
+  }
+  h2 {
+    color: #9a57ff;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  input {
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed #9a57ff;
+    border-radius: 12px;
+    margin-top: 15px;
+  }
+  button {
+    background: linear-gradient(90deg, #9a57ff, #ff73d9);
+    color: white;
+    padding: 12px 22px;
+    border-radius: 12px;
+    border: none;
+    margin-top: 25px;
+    width: 100%;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:hover {
+    transform: scale(1.05);
+  }
+  .result-box {
+    margin-top: 30px;
+    background: #faf5ff;
+    border-left: 6px solid #9a57ff;
+    padding: 20px;
+    border-radius: 15px;
+  }
+  .label {
+    font-weight: 600;
+    margin-top: 12px;
+  }
+</style>
+</head>
+
+<body>
+
+<header>📄 Resume Analyzer</header>
+
+<div class="container">
+  <h2>Upload Your Resume (PDF or Text)</h2>
+
+  <input type="file" id="resume" accept=".pdf,.txt">
+
+  <button onclick="analyzeResume()">Analyze Resume</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+async function analyzeResume() {
+  const file = document.getElementById("resume").files[0];
+  if (!file) {
+    alert("Please upload your resume");
+    return;
+  }
+
+  let formData = new FormData();
+  formData.append("resume", file);
+
+  document.getElementById("result").innerHTML =
+      "<p>⏳ Analyzing your resume... Please wait...</p>";
+
+  try {
+    const res = await fetch("/api/analyze-resume", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+      document.getElementById("result").innerHTML = "<p>❌ Error analyzing resume</p>";
+      return;
+    }
+
+    document.getElementById("result").innerHTML = `
+      <div class="result-box">
+        <div class="label">⭐ Summary</div>
+        <p>${data.summary}</p>
+
+        <div class="label">💪 Strengths</div>
+        <ul>${data.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+
+        <div class="label">⚠ Weaknesses</div>
+        <ul>${data.weaknesses.map(w => `<li>${w}</li>`).join('')}</ul>
+
+        <div class="label">📊 ATS Score</div>
+        <p><b>${data.ats} / 100</b></p>
+
+        <div class="label">🛠 Suggestions</div>
+        <ul>${data.suggestions.map(s => `<li>${s}</li>`).join('')}</ul>
+      </div>
+    `;
+
+  } catch (err) {
+    document.getElementById("result").innerHTML = "<p>❌ Server error</p>";
+  }
+}
+</script>
+
+</body>
+</html>

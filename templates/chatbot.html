@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat with AI Mentor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #c80bf8, #fff0f9);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .chat-container {
+      background: rgb(243, 157, 233);
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      width: 90%;
+      max-width: 600px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      height: 75vh;
+    }
+    h1 {
+      text-align: center;
+      color: #3a86ff;
+    }
+    #chatBox {
+      flex: 1;
+      overflow-y: auto;
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      background-color: #f8faff;
+    }
+    .msg {
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 80%;
+    }
+    .user {
+      background-color: #dbeafe;
+      align-self: flex-end;
+    }
+    .ai {
+      background-color: #e9f5ff;
+      align-self: flex-start;
+    }
+    form {
+      display: flex;
+      margin-top: 10px;
+      gap: 10px;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+    button {
+      background-color: #e338e3;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #bc26c4;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h1>💬 Chat with AI Mentor</h1>
+    <div id="chatBox"></div>
+
+    <form id="chatForm">
+      <input type="text" id="prompt" placeholder="Type your question..." required>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const chatForm = document.getElementById("chatForm");
+    const chatBox = document.getElementById("chatBox");
+
+    chatForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const input = document.getElementById("prompt");
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      // Add user message
+      chatBox.innerHTML += `<div class="msg user"><b>You:</b> ${msg}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+      input.value = "";
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: msg })
+        });
+
+        const data = await res.json();
+        const reply = data.reply || data.error || "⚠️ No response";
+        chatBox.innerHTML += `<div class="msg ai"><b>AI Mentor:</b> ${reply}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } catch (error) {
+        chatBox.innerHTML += `<div class="msg ai" style="color:red;">Error: ${error}</div>`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Mock Interview - CodePath AI</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f4e1ff, #ffe6f9);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 1.6rem;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(160, 60, 255, 0.2);
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(160, 60, 255, 0.15);
+    }
+
+    h2 {
+      color: #9a57ff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #question-box {
+      background: #faf5ff;
+      border-left: 5px solid #9a57ff;
+      padding: 15px;
+      border-radius: 10px;
+      color: #333;
+      font-size: 1.1rem;
+      min-height: 60px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-family: "Poppins", sans-serif;
+    }
+
+    button {
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      margin: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(160, 60, 255, 0.3);
+    }
+
+    #feedback-box {
+      margin-top: 25px;
+      background: #faf5ff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 15px rgba(160, 60, 255, 0.1);
+      display: none;
+    }
+
+    #feedback-box h4 {
+      color: #9a57ff;
+      margin-bottom: 10px;
+    }
+
+    .nav-links {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 10px;
+      margin: 10px;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 12px rgba(160, 60, 255, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <header>🎯 AI Mock Interview</header>
+
+  <div class="container">
+    <h2>Answer 5 Questions — Get Feedback Step by Step</h2>
+
+    <div id="question-box">Click “Start Interview” to load your first question.</div>
+
+    <textarea id="answer" placeholder="Write your answer here..."></textarea>
+
+    <div style="text-align:center;">
+      <button id="start-btn">🚀 Start Interview</button>
+      <button id="feedback-btn" disabled>💬 Get Feedback</button>
+      <button id="next-btn" disabled>➡️ Next Question</button>
+    </div>
+
+    <div id="feedback-box"></div>
+
+    <div class="nav-links">
+      <a href="/dashboard">🏠 Dashboard</a>
+      <a href="/resources">📚 Resources</a>
+    </div>
+  </div>
+
+  <script>
+    let questions = [];
+    let currentIndex = 0;
+    let totalScore = 0;
+    let totalQuestions = 5;
+
+    const questionBox = document.getElementById("question-box");
+    const answerBox = document.getElementById("answer");
+    const feedbackBox = document.getElementById("feedback-box");
+    const startBtn = document.getElementById("start-btn");
+    const feedbackBtn = document.getElementById("feedback-btn");
+    const nextBtn = document.getElementById("next-btn");
+
+    // Load 5 interview questions
+    startBtn.addEventListener("click", async () => {
+      questionBox.textContent = "⏳ Loading your interview questions...";
+      startBtn.disabled = true;
+
+      try {
+        const res = await fetch("/get-interview-questions", { method: "POST" });
+        const data = await res.json();
+        questions = data.questions || [];
+
+        if (questions.length === 0) {
+          questionBox.textContent = "⚠️ No questions generated.";
+          return;
+        }
+
+        currentIndex = 0;
+        totalScore = 0;
+        showQuestion();
+        feedbackBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        questionBox.textContent = "❌ Error loading questions.";
+      }
+    });
+
+    // Show question
+    function showQuestion() {
+      const q = questions[currentIndex];
+      questionBox.textContent = `Q${currentIndex + 1}: (${q.type}) ${q.question}`;
+      feedbackBox.style.display = "none";
+      feedbackBtn.disabled = false;
+      nextBtn.disabled = true;
+      answerBox.value = "";
+    }
+
+    // Get feedback
+    feedbackBtn.addEventListener("click", async () => {
+      const question = questions[currentIndex]?.question;
+      const answer = answerBox.value.trim();
+
+      if (!answer) {
+        alert("⚠️ Please write your answer before submitting!");
+        return;
+      }
+
+      feedbackBox.style.display = "block";
+      feedbackBox.innerHTML = "🧠 Evaluating your answer...";
+
+      try {
+        const res = await fetch("/get-interview-feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, answer })
+        });
+
+        const data = await res.json();
+        feedbackBox.innerHTML = `
+          <h4>💬 Feedback:</h4>
+          <p>${data.feedback}</p>
+          <p><b>Score:</b> ${data.score}/100</p>
+        `;
+        totalScore += data.score || 0;
+
+        feedbackBtn.disabled = true;
+        nextBtn.disabled = false;
+      } catch (err) {
+        feedbackBox.innerHTML = "❌ Error getting feedback.";
+      }
+    });
+
+    // Next Question
+    nextBtn.addEventListener("click", () => {
+      currentIndex++;
+      if (currentIndex < questions.length) {
+        showQuestion();
+      } else {
+        const avg = Math.round(totalScore / questions.length);
+        questionBox.textContent = `🎉 Interview completed! Your average score: ${avg}/100`;
+        feedbackBox.innerHTML = "<p>✅ Great job! Keep practicing to improve your skills.</p>";
+        feedbackBtn.disabled = true;
+        nextBtn.disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>

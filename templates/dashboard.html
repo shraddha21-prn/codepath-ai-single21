@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Dashboard - CodePath AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f4e1ff, #ffe6f9, #fff);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(166, 66, 255, 0.3);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 0 8px 25px rgba(160, 60, 255, 0.15);
+      text-align: center;
+    }
+
+    h1, h2, h3 {
+      color: #9a57ff;
+      margin: 15px 0;
+    }
+
+    .progress-card,
+    .resource-progress-card,
+    .preparedness-section,
+    .badge-card,
+    .ai-tip,
+    .message-card,
+    .next-step-card {
+      margin-top: 30px;
+      background: #faf5ff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 6px 14px rgba(160, 60, 255, 0.1);
+    }
+
+    .progress-bar,
+    .progress-container {
+      width: 100%;
+      height: 18px;
+      background: #f1e3ff;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress, .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      border-radius: 10px;
+      transition: width 0.8s ease-in-out;
+    }
+
+    .progress-label {
+      font-size: 14px;
+      color: #555;
+      text-align: right;
+      margin-top: 5px;
+    }
+
+    .badge-card {
+      background: linear-gradient(120deg, #faf0ff, #ffe6f9);
+      text-align: center;
+    }
+
+    .badge {
+      font-size: 1.8rem;
+      color: #9a57ff;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .ai-tip {
+      font-style: italic;
+      background: linear-gradient(135deg, #f9e8ff, #ffeaf8);
+      border-left: 5px solid #9a57ff;
+      box-shadow: 0 4px 10px rgba(166, 66, 255, 0.15);
+      text-align: left;
+    }
+
+    .message-card {
+      text-align: center;
+      font-weight: 500;
+      background: linear-gradient(135deg, #f8e6ff, #ffeaf8);
+      color: #4a1560;
+    }
+
+    .chart-container {
+      margin-top: 40px;
+      background: #faf5ff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 6px 14px rgba(160, 60, 255, 0.1);
+    }
+
+    .quick-actions {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .quick-actions h3 {
+      margin-bottom: 15px;
+    }
+
+    .quick-actions a {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 22px;
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+      box-shadow: 0 4px 10px rgba(160, 60, 255, 0.15);
+    }
+
+    .quick-actions a:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 14px rgba(160, 60, 255, 0.4);
+    }
+
+    .next-step-card {
+      margin-top: 50px;
+      background: linear-gradient(135deg, #faf0ff, #ffe6f9);
+      padding: 25px;
+      border-radius: 20px;
+      text-align: center;
+    }
+
+    .resources-btn {
+      background: linear-gradient(90deg, #9a57ff, #ff73d9);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-block;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .resources-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 12px rgba(160, 60, 255, 0.4);
+    }
+
+    footer {
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+      margin: 25px 0 10px;
+    }
+    /* Hover effects for dashboard cards */
+.progress-card:hover,
+.resource-progress-card:hover,
+.preparedness-section:hover,
+.badge-card:hover,
+.ai-tip:hover,
+.message-card:hover,
+.next-step-card:hover {
+  transform: scale(1.02);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(160, 60, 255, 0.25);
+}
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-title">CodePath AI</div>
+    <a href="/" style="color:white;text-decoration:none;">Sign Out</a>
+  </header>
+
+  <div class="container">
+    <h1>Your Progress Dashboard</h1>
+    <h3>👩‍💻 Welcome, {{ user.name }} ({{ user.stream }})</h3>
+
+    <div class="progress-card">
+      <h3>Overall Learning Progress</h3>
+      <div class="progress-bar">
+        <div class="progress" style="width: {{ user.progress | safe }}%;"></div>
+      </div>
+      <p>Progress: <b>{{ user.progress }}%</b></p>
+      <p>📊 Latest Quiz Score: <b>{{ user.quiz_score }}</b>/100</p>
+     <p>⚡ XP Earned: <b>{{ user.xp }}</b></p>
+     <p>🧩 Total Resources Completed: <b>{{ resources_completed }}%</b></p>
+     <p>🎯 Interview Preparedness: <b>{{ interview_preparedness }}%</b></p>
+
+    </div>
+
+    <div class="resource-progress-card">
+      <h3>📚 Resource Completion</h3>
+      <div class="progress-container">
+        <div class="progress-fill" style="width: {{ resources_completed }}%;"></div>
+      </div>
+      <div class="progress-label">{{ resources_completed }}% completed</div>
+    </div>
+
+    <div class="preparedness-section">
+      <h3>🎯 Interview Preparedness</h3>
+      <div class="progress-container">
+        <div class="progress-fill" style="width: {{ interview_preparedness }}%;"></div>
+      </div>
+      <div class="progress-label">{{ interview_preparedness }}%</div>
+    </div>
+
+    <div class="badge-card">
+      <h2>Your Badge Level</h2>
+      <div class="badge">{{ badge }}</div>
+    </div>
+
+    <div class="ai-tip">
+      💡 <b>AI Mentor Tip:</b> {{ ai_tip }}
+    </div>
+
+    <div class="message-card">
+      🏆 {{ message }}
+    </div>
+
+    <div class="chart-container">
+      <h2>Skill Analytics</h2>
+      <canvas id="skillRadarChart"></canvas>
+    </div>
+
+    <div class="quick-actions">
+      <h3>Quick Actions</h3>
+      <a href="/generate-roadmap">📍 View Roadmap</a>
+      <a href="/quiz">🧠 Take Quiz</a>
+      <a href="/resources">📚 Resources</a>
+      <a href="/chatbot">🤖 Chat with AI Mentor</a>
+      <a href="/resume-analyzer">📄 Resume Analyzer</a>
+      <a href="/profile">👤 Profile</a>
+
+
+
+    </div>
+
+    <div class="next-step-card">
+      <h2>Ready for the Next Step?</h2>
+      <p>Test your skills in a realistic interview scenario.</p>
+      <a href="/interview" class="resources-btn">Start Mock Interview</a>
+    </div>
+  </div>
+
+  <footer>✨ Keep learning, keep building, keep shining — CodePath AI ✨</footer>
+
+  <script>
+    // Simple Skill Radar Chart
+    const ctx = document.getElementById('skillRadarChart');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['Python', 'ML', 'Data', 'DevOps', 'AI', 'DSA'],
+          datasets: [{
+            label: 'Skill Level',
+            data: [80, 70, 60, 50, 65, 75],
+            fill: true,
+            backgroundColor: 'rgba(154,87,255,0.2)',
+            borderColor: '#9a57ff',
+            pointBackgroundColor: '#ff73d9'
+          }]
+        },
+        options: {
+          scales: { r: { suggestedMin: 0, suggestedMax: 100, grid: { color: '#e4d8ff' } } },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
